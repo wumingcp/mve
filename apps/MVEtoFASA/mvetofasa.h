@@ -34,6 +34,7 @@
 #include "mve/image_exif.h"
 #include "mve/mesh.h"
 #include "mve/mesh_tools.h"
+#include "mve/scene.h"
 
 class MTF{
     public:
@@ -70,12 +71,12 @@ class MTF{
 	* @brief loading multiple depth-maps for each image
 	* @param path The path where we save these depth-maps
 	*/
-	void writeDepthMap(const std::string& path);
+	void writeDepthMaps(const std::string& path);
 
 
     private:
 
-    mve::scene::Ptr m_scene;
+    mve::Scene::Ptr m_scene;
 	std::string input_path;
 	std::string output_path;
 

@@ -2,17 +2,22 @@
 
 #define THUMBNAIL_SIZE 50
 
-FTM::FTM(){}
+FTM::FTM(const std::string & inputpath,const std::string & outputpath)
+{
+        this->input_path=inputpath;
+        this->output_path=outputpath;
+}
 
 FTM::~FTM(){}
 
-void FTM::loadFASA(const std::string& path){
+void FTM::loadFASA(){
+    std::string path=this->input_path;
     if(!util::fs::dir_exists(path.c_str())){
 		std::cerr << "[Error] path does not exist! Please check it!!"
 			<< std::endl;
 		exit(1);
 	}
-    
+
     std::string bundler = util::fs::join_path(path, "bundle.out");
     loadBundler(bundler);
 
@@ -20,11 +25,11 @@ void FTM::loadFASA(const std::string& path){
     loadImages(list);
 
     loadDepthMap(path);
-
 }
 
 
-void FTM::writeMVE(const std::string& path){
+void FTM::writeMVE(){
+    std::string path=this->output_path;
 	if(!util::fs::dir_exists(path.c_str())){
 		std::cerr << "[Error] path does not exist! Please check it!!"
 			<< std::endl;
@@ -221,7 +226,7 @@ void FTM::loadImages(const std::string&  list){
 
         /* Add EXIF data to view if available. */
         add_exif_to_view(m_views[i], exif);
-	} 
+	}
 }
 
 /* ---------------------------------------------------------------- */

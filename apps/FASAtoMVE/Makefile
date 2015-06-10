@@ -1,9 +1,9 @@
-CFLAGS= -g
+#CFLAGS= -g
 MVE_ROOT := ../..
 TARGET := $(shell basename `pwd`)
 include ${MVE_ROOT}/Makefile.inc
 
-CXXFLAGS += -I${MVE_ROOT}/libs ${OPENMP} -std=c++0x -g
+CXXFLAGS += -I${MVE_ROOT}/libs ${OPENMP}
 LDLIBS += -lpng -ltiff -ljpeg ${OPENMP}
 
 SOURCES := $(wildcard [^_]*.cc)

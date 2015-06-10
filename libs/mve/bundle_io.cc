@@ -407,6 +407,74 @@ load_photosynther_bundle (std::string const& filename)
     return load_bundler_ps_intern(filename, BUNDLE_FORMAT_PHOTOSYNTHER);
 }
 
+//TODO: project 3D point into image to find the feature position
+void
+save_noah_bundle (Bundle::ConstPtr bundle, std::string const& filename)
+{
+    Bundle::Features const& features = bundle->get_features();
+    Bundle::Cameras const& cameras = bundle->get_cameras();
+
+    std::cout << "Writing bundle (" << cameras.size() << " cameras, "
+        << features.size() << " features): " << filename << "...\n";
+
+    std::ofstream out(filename.c_str());
+    if (!out.good())
+        throw util::FileException(filename, std::strerror(errno));
+
+    out << "# Bundle file v0.3\n";
+    out << cameras.size() << " " << features.size() << "\n";
+
+    /* Write all cameras to bundle file. */
+    for (std::size_t i = 0; i < cameras.size(); ++i)
+    {
+        CameraInfo const& cam = cameras[i];
+
+        bool camera_valid = true;
+        for (int j = 0; camera_valid && j < 3; ++j)
+            if (MATH_ISINF(cam.trans[j]) || MATH_ISNAN(cam.trans[j]))
+                camera_valid = false;
+        for (int j = 0; camera_valid && j < 9; ++j)
+            if (MATH_ISINF(cam.rot[j]) || MATH_ISNAN(cam.rot[j]))
+                camera_valid = false;
+
+        if (cam.flen == 0.0f || !camera_valid)
+        {
+            for (int i = 0; i < 5 * 3; ++i)
+                out << "0" << (i % 3 == 2 ? "\n" : " ");
+            continue;
+        }
+
+        out << cam.flen << " " << cam.dist[0] << " " << cam.dist[1] << "\n";
+        out << cam.rot[0] << " " << cam.rot[1] << " " << cam.rot[2] << "\n";
+        out << cam.rot[3] << " " << cam.rot[4] << " " << cam.rot[5] << "\n";
+        out << cam.rot[6] << " " << cam.rot[7] << " " << cam.rot[8] << "\n";
+        out << cam.trans[0] << " " << cam.trans[1]
+            << " " << cam.trans[2] << "\n";
+    }
+
+    /* Write all features to bundle file. */
+    for (std::size_t i = 0; i < features.size(); ++i)
+    { 
+        Bundle::Feature3D const& p = features[i];
+        out << p.pos[0] << " " << p.pos[1] << " " << p.pos[2] << "\n";
+        out << static_cast<int>(p.color[0] * 255.0f + 0.5f) << " "
+            << static_cast<int>(p.color[1] * 255.0f + 0.5f) << " "
+            << static_cast<int>(p.color[2] * 255.0f + 0.5f) << "\n";
+        out << p.refs.size();
+        for (std::size_t j = 0; j < p.refs.size(); ++j)
+         {
+            Bundle::Feature2D const& ref = p.refs[j];
+
+            //FIXME
+            out << " " << ref.view_id << " " << ref.feature_id << " "
+                << ref.pos[0] << " " << ref.pos[1];
+        }
+        out << "\n";
+    }
+
+    out.close();
+}
+
 void
 save_photosynther_bundle (Bundle::ConstPtr bundle, std::string const& filename)
 {

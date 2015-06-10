@@ -60,6 +60,13 @@ load_nvm_bundle (std::string const& filename,
 Bundle::Ptr
 load_bundler_bundle (std::string const& filename);
 
+/**
+ * Writes a noah bundle file.
+ */
+void 
+save_noah_bundle(Bundle::ConstPtr bundle,\
+	std::string const& filename);
+
 /* ------------------- Support for Photosynther ------------------- */
 
 /**
@@ -69,7 +76,7 @@ load_bundler_bundle (std::string const& filename);
 Bundle::Ptr
 load_photosynther_bundle (std::string const& filename);
 
-/**
+ /**
  * Writes a Photosynther bundle file.
  */
 void

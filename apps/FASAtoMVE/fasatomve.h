@@ -37,48 +37,48 @@
 
 class FTM{
     public:
-    FTM();
+    FTM(const std::string & inputpath,const std::string & outputpath);
     ~FTM();
 
     /**
-     * @brief loading FASA data 
+     * @brief loading FASA data
      * @param path The path where FASA data locates
      */
-    void loadFASA(const std::string& path);
+    void loadFASA();
 
     /**
      * @brief write data to disk using MVE format
      * @param path The location where we want to save the scene
      */
-    void writeMVE(const std::string& path);
+    void writeMVE();
 
     protected:
-	
+
 	/**
 	* @brief loading images according to the list
 	* @param list the list for images
 	*/
 	void loadImages(const std::string& list);
-	
+
 	/**
 	* @brief loading bundler data
 	* @param bundlerfile bundler file for saving bundler data
 	*/
 	void loadBundler(const std::string& bundler);
-	
+
 	/**
 	* @brief loading multiple depth-maps for each image
 	* @param path The path where we save these depth-maps
 	*/
 	void loadDepthMap(const std::string& path);
-	
+
 	/**
 	* @brief loading image
 	* @param fname The path for image file
 	* @param exif Extracting tag from jpg image
 	*/
 	mve::ByteImage::Ptr load_8bit_image (std::string const& fname, std::string* exif);
-	
+
 	/**
 	* brief Create thumbnail preview image for current image
 	* param img The current image
@@ -89,6 +89,8 @@ class FTM{
 
     mve::Bundle::Ptr m_bundle;
 	std::vector<mve::View::Ptr> m_views;
+	std::string input_path;
+	std::string output_path;
 
 };
 
